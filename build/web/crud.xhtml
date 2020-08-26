@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"      
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Facelet Title</title>
+        <style type="text/css">
+            table{
+                text-align: center;
+                margin-bottom: 20px;
+            }
+        </style>
+    </h:head>
+    <h:body>
+        <div align="center">
+            <h:form id="formPrincipal">
+                <p:dataTable var="lista" value="#{alunoBean.alunos}" id="tabelaAlunos" style="width: 70%" paginator="true" rows="4">
+                    <f:facet name="header">Lista de Alunos</f:facet>
+                    <p:column headerText="Código">
+                        <h:outputText value="#{lista.id}"/>
+                    </p:column>
+                    <p:column headerText="Nome">
+                        <h:outputText value="#{lista.nome}"/>
+                    </p:column>
+                    <p:column headerText="Matricula">
+                        <h:outputText value="#{lista.matricula}"/>
+                    </p:column>
+                    <p:column headerText="Ações">
+                        <p:commandLink title="Alterar" update=":formAlterar:Alterar" oncomplete="PF('dialogAlterar').show()" immediate="true">
+                            <p:graphicImage value="/imagens/editar.gif"/>
+                            <f:setPropertyActionListener target="#{alunoBean.aluno}" value="#{lista}" />
+                        </p:commandLink>
+                        <p:commandLink title="Excluir" update=":formExcluir:Excluir" oncomplete="PF('confirmation').show()" immediate="true">
+                            <p:graphicImage value="/imagens/excluir.gif"/>
+                            <f:setPropertyActionListener target="#{alunoBean.aluno}" value="#{lista}" />
+                        </p:commandLink>
+                    </p:column>
+                </p:dataTable>
+                
+                <p:commandButton value="Cadastrar" id="cadastrar" oncomplete="PF('dialogCadastrar').show()" />
+            </h:form>
+        </div>
+        
+        <h:form id="formAlterar">
+            <p:dialog header="Alterar" widgetVar="dialogAlterar" modal="true" id="Alterar" resizable="false">
+                <p:panelGrid id="panelAlterar" columns="2">
+                    <h:outputText value="Nome:"/>
+                    <p:inputText value="#{alunoBean.aluno.nome}" />
+                    <h:outputText value="Matrícula:"/>
+                    <p:inputText value="#{alunoBean.aluno.matricula}" />
+                </p:panelGrid>
+                <p:commandButton value="Alterar" actionListener="#{alunoBean.alterar}" update=":formPrincipal:tabelaAlunos" oncomplete="PF('dialogAlterar').hide()"/>
+            </p:dialog>
+        </h:form>
+        
+        <h:form id="formCadastrar">
+            <p:dialog header="Cadastrar" widgetVar="dialogCadastrar" modal="true" resizable="false">
+                <p:panelGrid id="panelCadastrar" columns="2">
+                    <h:outputText value="Nome:"/>
+                    <p:inputText value="#{alunoBean.aluno.nome}" />
+                    <h:outputText value="Matrícula:"/>
+                    <p:inputText value="#{alunoBean.aluno.matricula}"/>
+                </p:panelGrid>
+                <p:commandButton value="Cadastrar" actionListener="#{alunoBean.cadastrar}" update=":formPrincipal:tabelaAlunos, @form" oncomplete="PF('dialogCadastrar').hide()"/>
+            </p:dialog>
+        </h:form>
+        
+        <h:form id="formExcluir">
+            <p:confirmDialog id="Excluir" message="Você gostaria de excluir o aluno: #{alunoBean.aluno.nome} ?" header="Excluir" severity="alert" widgetVar="confirmation">
+                <p:commandButton id="confirm" value="Sim" oncomplete="PF('confirmation').hide()" actionListener="#{alunoBean.excluir}" update=":formPrincipal:tabelaAlunos"/>
+                <p:commandButton id="decline" value="Não" oncomplete="PF('confirmation').hide()"/>
+            </p:confirmDialog>
+        </h:form>
+    </h:body>
+</html>
+
